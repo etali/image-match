@@ -89,5 +89,6 @@ class SignatureES(SignatureDatabaseBase):
 
     def insert_single_record(self, rec):
         rec['timestamp'] = datetime.now()
-        self.es.index(index=self.index, doc_type=self.doc_type, body=rec)
+        res = self.es.index(index=self.index, doc_type=self.doc_type, body=rec)
+        return res
 
