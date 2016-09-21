@@ -46,7 +46,7 @@ class SignatureES(SignatureDatabaseBase):
         super(SignatureES, self).__init__(*args, **kwargs)
 
     def search_single_record(self, rec):
-        path = rec.pop('path')
+        # path = rec.pop('path')
         signature = rec.pop('signature')
         if 'metadata' in rec:
             rec.pop('metadata')
@@ -77,8 +77,10 @@ class SignatureES(SignatureDatabaseBase):
 
         formatted_res = [{'id': x['_id'],
                           'score': x['_score'],
-                          'metadata': x['_source'].get('metadata'),
-                          'path': x['_source'].get('url', x['_source'].get('path'))}
+                          'metadata': x['_source'].get('metadata'), \
+                          'signature': x['_source']['signature'],
+                          # 'path': x['_source'].get('url', x['_source'].get('path'))
+                          } \
                          for x in res]
 
         for i, row in enumerate(formatted_res):
@@ -89,6 +91,5 @@ class SignatureES(SignatureDatabaseBase):
 
     def insert_single_record(self, rec):
         rec['timestamp'] = datetime.now()
-        res = self.es.index(index=self.index, doc_type=self.doc_type, body=rec)
-        return res
+        self.es.index(index=self.index, doc_type=self.doc_type, body=rec)
 
